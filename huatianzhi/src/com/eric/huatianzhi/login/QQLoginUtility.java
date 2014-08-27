@@ -3,6 +3,7 @@ package com.eric.huatianzhi.login;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.eric.huatianzhi.utils.MLog;
 import com.tencent.connect.UserInfo;
@@ -13,16 +14,15 @@ import com.tencent.tauth.UiError;
 
 public class QQLoginUtility {
 	private static final String TAG = "QQLoginUtility";
-	private static QQAuth mQQAuth;
 	private static Tencent mTencent;
-	private static String mAppid = "222222";
+	private static String mAppid = "1102297284";
 	private static QQLoginUtility qqLoginUtility;
 	private UserInfo mInfo;
 	private Activity activity;
 
 	private QQLoginUtility(Activity activity) {
-		mQQAuth = QQAuth.createInstance(mAppid, activity);
-		mTencent = Tencent.createInstance(mAppid, activity);
+		mTencent = Tencent.createInstance(mAppid,
+				activity.getApplicationContext());
 		this.activity = activity;
 	}
 
@@ -34,18 +34,18 @@ public class QQLoginUtility {
 	}
 
 	public void doLogin() {
-		if (!mQQAuth.isSessionValid()) {
-			IUiListener listener = new BaseUiListener() {
+        if (!mTencent.isSessionValid())
+        {
+        	IUiListener listener = new BaseUiListener() {
 				@Override
 				protected void doComplete(JSONObject values) {
 					updateUserInfo();
 					updateLoginButton();
 				}
 			};
-			// mQQAuth.login(this, "all", listener);
-			mTencent.login(activity, "all", listener);
-		} else {
-			mQQAuth.logout(activity);
+        	mTencent.login(activity, "all", listener);
+        }else {
+        	mTencent.logout(activity);
 			updateUserInfo();
 			updateLoginButton();
 		}
@@ -55,7 +55,7 @@ public class QQLoginUtility {
 
 		@Override
 		public void onComplete(Object response) {
-			MLog.d(TAG, response.toString());
+			MLog.d(TAG, "onComplete: "+response.toString());
 			doComplete((JSONObject) response);
 		}
 
@@ -65,7 +65,7 @@ public class QQLoginUtility {
 
 		@Override
 		public void onError(UiError e) {
-			MLog.e(TAG, e.errorDetail);
+			MLog.e(TAG, "onError: "+e.errorDetail);
 		}
 
 		@Override
@@ -75,7 +75,7 @@ public class QQLoginUtility {
 	}
 
 	private void updateUserInfo() {
-		if (mQQAuth != null && mQQAuth.isSessionValid()) {
+		if (mTencent != null && mTencent.isSessionValid()) {
 			IUiListener listener = new IUiListener() {
 
 				@Override
@@ -86,7 +86,7 @@ public class QQLoginUtility {
 
 				@Override
 				public void onComplete(final Object response) {
-					MLog.d(TAG, response.toString());
+					MLog.d(TAG, "updateUserInfo onComplete: "+response.toString());
 				}
 
 				@Override
@@ -95,7 +95,7 @@ public class QQLoginUtility {
 
 				}
 			};
-			mInfo = new UserInfo(activity, mQQAuth.getQQToken());
+			mInfo = new UserInfo(activity, mTencent.getQQToken());
 			mInfo.getUserInfo(listener);
 
 		} else {
@@ -106,12 +106,18 @@ public class QQLoginUtility {
 	}
 
 	private void updateLoginButton() {
-		if (mQQAuth != null && mQQAuth.isSessionValid()) {
+		if (mTencent != null && mTencent.isSessionValid()) {
 			// mNewLoginButton.setTextColor(Color.RED);
 			// mNewLoginButton.setText("退出帐号");
 		} else {
 			// mNewLoginButton.setTextColor(Color.BLUE);
 			// mNewLoginButton.setText("登录");
+		}
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (mTencent != null) {
+			mTencent.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 }

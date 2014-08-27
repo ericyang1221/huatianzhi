@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 
 import com.eric.huatianzhi.login.QQLoginUtility;
 import com.eric.huatianzhi.login.SinaWeiboLoginUtility;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -17,6 +18,17 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		SlidingMenu menu = new SlidingMenu(this);
+		menu.setMode(SlidingMenu.RIGHT);
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		menu.setShadowWidthRes(R.dimen.shadow_width);
+		menu.setShadowDrawable(R.drawable.shadow);
+		menu.setBehindWidthRes(R.dimen.slidingmenu_offset);
+		menu.setFadeDegree(0.35f);
+		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+		menu.setMenu(R.layout.menu);
+
 		findViewById(R.id.qqlogin).setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -53,11 +65,14 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        
-        SinaWeiboLoginUtility.getInstance(MainActivity.this).onActivityResult(requestCode, resultCode, data);
-    }
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		SinaWeiboLoginUtility.getInstance(MainActivity.this).onActivityResult(
+				requestCode, resultCode, data);
+		QQLoginUtility.getInstance(MainActivity.this).onActivityResult(
+				requestCode, resultCode, data);
+	}
 }
