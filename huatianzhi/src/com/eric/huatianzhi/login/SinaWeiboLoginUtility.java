@@ -12,6 +12,9 @@ import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
+import com.sina.weibo.sdk.net.RequestListener;
+import com.sina.weibo.sdk.openapi.UsersAPI;
+import com.sina.weibo.sdk.openapi.models.User;
 
 public class SinaWeiboLoginUtility {
 	private final String TAG = "SinaWeiboLoginUtility";
@@ -51,6 +54,24 @@ public class SinaWeiboLoginUtility {
 			if (mAccessToken.isSessionValid()) {
 				AccessTokenKeeper.writeAccessToken(activity, mAccessToken);
 				MLog.d(TAG, "auth success.");
+				UsersAPI mUsersAPI = new UsersAPI(mAccessToken);
+				RequestListener mListener = new RequestListener() {
+					@Override
+					public void onComplete(String response) {
+						if (!TextUtils.isEmpty(response)) {
+							User user = User.parse(response);
+							MLog.d(TAG, user.name);
+						}
+					}
+
+					@Override
+					public void onWeiboException(WeiboException arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				};
+				long uid = Long.parseLong(mAccessToken.getUid());
+				mUsersAPI.show(uid, mListener);
 			} else {
 				// 以下几种情况，您会收到 Code：
 				// 1. 当您未在平台上注册的应用程序的包名与签名时；
@@ -75,12 +96,12 @@ public class SinaWeiboLoginUtility {
 			MLog.e(TAG, "Auth exception : " + e.getMessage());
 		}
 	}
-	
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // SSO 授权回调
-        // 重要：发起 SSO 登陆的 Activity 必须重写 onActivityResult
-        if (mSsoHandler != null) {
-            mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
-        }
-    }
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// SSO 授权回调
+		// 重要：发起 SSO 登陆的 Activity 必须重写 onActivityResult
+		if (mSsoHandler != null) {
+			mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+		}
+	}
 }
