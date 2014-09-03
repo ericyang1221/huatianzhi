@@ -1,23 +1,41 @@
 package com.eric.huatianzhi;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import com.eric.volley.VolleySingleton;
 
-public class BaseActivity extends Activity {
+public class BaseActivity extends FragmentActivity {
 	protected RequestQueue mRequestQueue;
+	private MyApplication myApp;
+	protected FragmentManager fragmentManager;
+
+	public MyApplication getMyApplication() {
+		if (myApp == null) {
+			myApp = (MyApplication) this.getApplication();
+		}
+		return myApp;
+	}
+
+	public FragmentManager getTheFragmentManager() {
+		if (fragmentManager == null) {
+			fragmentManager = this.getSupportFragmentManager();
+		}
+		return fragmentManager;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mRequestQueue = Volley.newRequestQueue(this);
+		mRequestQueue = VolleySingleton.getInstance().getRequestQueue();
+		fragmentManager = getTheFragmentManager();
 	}
-	
-	protected void addRequest(@SuppressWarnings("rawtypes") Request request){
-		if(mRequestQueue!=null){
+
+	protected void addRequest(@SuppressWarnings("rawtypes") Request request) {
+		if (mRequestQueue != null) {
 			mRequestQueue.add(request);
 		}
 	}
@@ -25,7 +43,7 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		if(mRequestQueue!=null){
+		if (mRequestQueue != null) {
 			mRequestQueue.cancelAll(this);
 		}
 	}
@@ -39,6 +57,5 @@ public class BaseActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-	
-	
+
 }

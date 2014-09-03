@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.eric.huatianzhi.utils.cache;
+package com.eric.lrucache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;

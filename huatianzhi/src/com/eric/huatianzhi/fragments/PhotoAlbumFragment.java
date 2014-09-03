@@ -1,33 +1,57 @@
-package com.eric.huatianzhi;
+package com.eric.huatianzhi.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
-import com.eric.huatianzhi.utils.cache.EricsImageCache;
-import com.huewu.pla.lib.MultiColumnPullToRefreshListView;
-import com.huewu.pla.lib.MultiColumnPullToRefreshListView.OnRefreshListener;
+import com.eric.huatianzhi.R;
+import com.eric.huatianzhi.utils.MLog;
+import com.eric.lrucache.EricsImageCache;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
 
-public class PullToRefreshSampleActivity extends Activity {
-	private RequestQueue mQueue;
+public class PhotoAlbumFragment extends BaseFragment {
+	private final String TAG = "PhotoAlbumFragment";
+	private PLA_AdapterView<ListAdapter> mAdapterView = null;
+	private MySimpleAdapter mAdapter = null;
+	private LayoutInflater inflater;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		this.inflater = inflater;
+		View layout = inflater.inflate(R.layout.photo_album, container, false);
+		mAdapterView = (PLA_AdapterView<ListAdapter>) layout
+				.findViewById(R.id.list);
+		return layout;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		MLog.d(TAG, "onResume");
+		initAdapter();
+		mAdapterView.setAdapter(mAdapter);
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+	}
 
 	private class MySimpleAdapter extends BaseAdapter {
-		private LayoutInflater mInflater = getLayoutInflater();
-		private ImageLoader imageLoader = new ImageLoader(mQueue,
-				EricsImageCache.getInstance(PullToRefreshSampleActivity.this));
+		private ImageLoader imageLoader = new ImageLoader(mRequestQueue,
+				EricsImageCache.getInstance(getBaseActivity()));
 		private List<String> dataList;
 
 		public MySimpleAdapter(List<String> dataList) {
@@ -50,12 +74,13 @@ public class PullToRefreshSampleActivity extends Activity {
 			return 0;
 		}
 
+		@SuppressLint("InflateParams")
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder = null;
 			if (convertView == null) {
 				holder = new ViewHolder();
-				convertView = mInflater.inflate(R.layout.sample_item, null);
+				convertView = inflater.inflate(R.layout.album_item, null);
 				holder.imageView = (NetworkImageView) convertView
 						.findViewById(R.id.thumbnail);
 				convertView.setTag(holder);
@@ -64,50 +89,16 @@ public class PullToRefreshSampleActivity extends Activity {
 			}
 			holder.imageView.setDefaultImageResId(R.drawable.ic_launcher);
 			holder.imageView.setErrorImageResId(R.drawable.ic_launcher);
-			holder.imageView
-					.setImageUrl(
-							dataList.get(position),
-							imageLoader);
+			MLog.d(TAG,
+					"position: " + position + "    url: "
+							+ dataList.get(position));
+			holder.imageView.setImageUrl(dataList.get(position), imageLoader);
 			return convertView;
 		}
 	}
 
 	class ViewHolder {
 		public NetworkImageView imageView;
-	}
-
-	private PLA_AdapterView<ListAdapter> mAdapterView = null;
-	private MySimpleAdapter mAdapter = null;
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(com.eric.huatianzhi.R.layout.sample_pull_to_refresh_act);
-		mQueue = Volley.newRequestQueue(this);
-		// mAdapterView = (PLA_AdapterView<Adapter>) findViewById(R.id.list);
-		mAdapterView = (PLA_AdapterView<ListAdapter>) findViewById(R.id.list);
-		final MultiColumnPullToRefreshListView lv = (MultiColumnPullToRefreshListView) mAdapterView;
-		lv.setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				System.out.println("xxxxxxxxxxxxxx");
-				// 5秒后完成
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						lv.onRefreshComplete();
-					}
-				}, 1000);
-			}
-		});
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		initAdapter();
-		mAdapterView.setAdapter(mAdapter);
 	}
 
 	private void initAdapter() {
@@ -122,5 +113,4 @@ public class PullToRefreshSampleActivity extends Activity {
 		l.add("http://www.meihua.info/today/post/image.axd?picture=kuxia3.jpg");
 		mAdapter = new MySimpleAdapter(l);
 	}
-
-}// end of class
+}
