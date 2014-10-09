@@ -15,13 +15,13 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.eric.huatianzhi.R;
 import com.eric.huatianzhi.utils.MLog;
-import com.eric.lrucache.EricsImageCache;
+import com.eric.volley.VolleySingleton;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
 
 public class PhotoAlbumFragment extends BaseFragment {
 	private final String TAG = "PhotoAlbumFragment";
 	private PLA_AdapterView<ListAdapter> mAdapterView = null;
-	private MySimpleAdapter mAdapter = null;
+	private WaterFallAdapter mAdapter = null;
 	private LayoutInflater inflater;
 
 	@SuppressWarnings("unchecked")
@@ -49,12 +49,12 @@ public class PhotoAlbumFragment extends BaseFragment {
 		super.onDestroyView();
 	}
 
-	private class MySimpleAdapter extends BaseAdapter {
-		private ImageLoader imageLoader = new ImageLoader(mRequestQueue,
-				EricsImageCache.getInstance(getBaseActivity()));
+	private class WaterFallAdapter extends BaseAdapter {
+		private ImageLoader imageLoader = VolleySingleton.getInstance()
+				.getImageLoader();
 		private List<String> dataList;
 
-		public MySimpleAdapter(List<String> dataList) {
+		public WaterFallAdapter(List<String> dataList) {
 			super();
 			this.dataList = dataList;
 		}
@@ -111,6 +111,6 @@ public class PhotoAlbumFragment extends BaseFragment {
 		l.add("http://imgt1.bdstatic.com/it/u=4081395060,2324339507&fm=90&gp=0.jpg");
 		l.add("http://imgt4.bdstatic.com/it/u=2961223305,208614355&fm=21&gp=0.jpg");
 		l.add("http://www.meihua.info/today/post/image.axd?picture=kuxia3.jpg");
-		mAdapter = new MySimpleAdapter(l);
+		mAdapter = new WaterFallAdapter(l);
 	}
 }

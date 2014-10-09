@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">huatianzhi</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">佳期</string>
+    <string name="enter_invitecode">请输入邀请码</string>
+    <string name="weibo_login">微博帐号登录</string>
+    <string name="qq_login">QQ帐号登录</string>
+    <string name="look_around">随便看看</string>
+    <string name="album">相册</string>
+    <string name="invitation">请柬</string>
+    <string name="friend">亲友团</string>
+    <string name="info">资讯</string>
 
 </resources>
