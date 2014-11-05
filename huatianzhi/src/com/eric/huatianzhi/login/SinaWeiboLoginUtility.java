@@ -1,10 +1,10 @@
 package com.eric.huatianzhi.login;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.eric.huatianzhi.BaseActivity;
 import com.eric.huatianzhi.utils.AccessTokenKeeper;
 import com.eric.huatianzhi.utils.MLog;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
@@ -16,31 +16,31 @@ import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.openapi.UsersAPI;
 import com.sina.weibo.sdk.openapi.models.User;
 
-public class SinaWeiboLoginUtility {
+public class SinaWeiboLoginUtility extends LoginUtility {
 	private final String TAG = "SinaWeiboLoginUtility";
 	private static SinaWeiboLoginUtility sinaWeiboLoginUtility;
 	private SsoHandler mSsoHandler;
 	private WeiboAuth mWeiboAuth;
 	private Oauth2AccessToken mAccessToken;
-	private Activity activity;
 	public static final String APP_KEY = "2584622791";
 	public static final String REDIRECT_URL = "http://www.sina.com";
 	public static final String SCOPE = "email,direct_messages_read,direct_messages_write,"
 			+ "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
 			+ "follow_app_official_microblog," + "invitation_write";
 
-	private SinaWeiboLoginUtility(Activity activity) {
+	protected SinaWeiboLoginUtility(BaseActivity activity) {
+		super(activity);
 		mWeiboAuth = new WeiboAuth(activity, APP_KEY, REDIRECT_URL, SCOPE);
-		this.activity = activity;
 	}
 
-	public static SinaWeiboLoginUtility getInstance(Activity activity) {
+	public static SinaWeiboLoginUtility getInstance(BaseActivity activity) {
 		if (sinaWeiboLoginUtility == null) {
 			sinaWeiboLoginUtility = new SinaWeiboLoginUtility(activity);
 		}
 		return sinaWeiboLoginUtility;
 	}
 
+	@Override
 	public void doLogin() {
 		mSsoHandler = new SsoHandler(activity, mWeiboAuth);
 		mSsoHandler.authorize(new AuthListener());

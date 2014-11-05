@@ -49,12 +49,14 @@ public abstract class LoginUtility {
 					@Override
 					public void onErrorResponse(VolleyError error) {
 						MLog.e(TAG, error.toString());
-						Toast.makeText(
-								activity,
-								activity.getString(R.string.login_error_pls_try_later),
-								Toast.LENGTH_LONG).show();
+						showLoginErrorToast(activity
+								.getString(R.string.login_error_pls_try_later));
 						activity.dismissProgressDialog();
 					}
 				}));
+	}
+
+	protected void showLoginErrorToast(String msg) {
+		Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
 	}
 }

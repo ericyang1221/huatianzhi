@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import android.content.Intent;
 
 import com.eric.huatianzhi.BaseActivity;
+import com.eric.huatianzhi.R;
 import com.eric.huatianzhi.utils.MLog;
 import com.tencent.connect.UserInfo;
 import com.tencent.tauth.IUiListener;
@@ -83,6 +84,8 @@ public class QQLoginUtility extends LoginUtility {
 
 				@Override
 				public void onError(UiError e) {
+					showLoginErrorToast(activity
+							.getString(R.string.login_error_pls_try_later));
 				}
 
 				@Override
