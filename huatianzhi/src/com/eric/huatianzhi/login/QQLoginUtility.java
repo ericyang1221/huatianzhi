@@ -1,38 +1,29 @@
 package com.eric.huatianzhi.login;
 
-import java.util.HashMap;
-
 import org.json.JSONObject;
 
 import android.content.Intent;
-import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.eric.huatianzhi.BaseActivity;
-import com.eric.huatianzhi.R;
 import com.eric.huatianzhi.utils.MLog;
-import com.eric.huatianzhi.utils.URLConstants;
 import com.tencent.connect.UserInfo;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
-public class QQLoginUtility {
-	private static final Integer QQLOGIN_TYPE = 2;
-	private static final String TAG = "QQLoginUtility";
+public class QQLoginUtility extends LoginUtility {
+	private final String TAG = "QQLoginUtility";
+	private final Integer QQLOGIN_TYPE = 2;
 	private static Tencent mTencent;
 	private static String mAppid = "1102297284";
 	private static QQLoginUtility qqLoginUtility;
 	private UserInfo mInfo;
-	private BaseActivity activity;
-	private String openId = null;
 
-	private QQLoginUtility(BaseActivity activity) {
+	protected QQLoginUtility(BaseActivity activity) {
+		super(activity);
 		mTencent = Tencent.createInstance(mAppid,
 				activity.getApplicationContext());
-		this.activity = activity;
+		loginType = QQLOGIN_TYPE;
 	}
 
 	public static QQLoginUtility getInstance(BaseActivity activity) {
@@ -42,6 +33,7 @@ public class QQLoginUtility {
 		return qqLoginUtility;
 	}
 
+	@Override
 	public void doLogin() {
 		if (!mTencent.isSessionValid()) {
 			IUiListener listener = new BaseUiListener() {
@@ -60,34 +52,6 @@ public class QQLoginUtility {
 		}
 	}
 
-	private void doJiaqiLogin(String nickName) {
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("Login", openId);
-		params.put("Password", "");
-		params.put("LoginType", QQLOGIN_TYPE);
-		params.put("InvitationCode", "3");
-		params.put("DisplayName", nickName);
-		JSONObject paramsJson = new JSONObject(params);
-		MLog.d(TAG, "jaqilogin params:" + paramsJson.toString());
-		activity.addRequest(new JsonObjectRequest(URLConstants.LOGIN_URL,
-				paramsJson, new Response.Listener<JSONObject>() {
-
-					@Override
-					public void onResponse(JSONObject response) {
-						MLog.d(TAG,response.toString());
-					}
-				}, new Response.ErrorListener() {
-
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						MLog.e(TAG, error.toString());
-						Toast.makeText(activity, activity
-								.getString(R.string.login_error_pls_try_later),
-								Toast.LENGTH_LONG).show();;
-					}
-				}));
-	}
-
 	private class BaseUiListener implements IUiListener {
 
 		@Override
@@ -97,19 +61,19 @@ public class QQLoginUtility {
 		}
 
 		protected void doComplete(JSONObject values) {
-			openId = values.optString("openid");
+			loginId = values.optString("openid");
 		}
 
 		@Override
 		public void onError(UiError e) {
 			MLog.e(TAG, "onError: " + e.errorDetail);
-			openId = null;
+			loginId = null;
 		}
 
 		@Override
 		public void onCancel() {
 			MLog.d(TAG, "onCancel");
-			openId = null;
+			loginId = null;
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.eric.huatianzhi;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,7 @@ public class BaseActivity extends FragmentActivity {
 	protected RequestQueue mRequestQueue;
 	private MyApplication myApp;
 	protected FragmentManager fragmentManager;
+	private ProgressDialog pd;
 
 	public MyApplication getMyApplication() {
 		if (myApp == null) {
@@ -57,5 +59,22 @@ public class BaseActivity extends FragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+
+	public void showProgressDialog() {
+		if (pd == null) {
+			ProgressDialog dialog = new ProgressDialog(this);
+			dialog.setTitle(getString(R.string.loading));
+			dialog.setIndeterminate(true);
+			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		}
+		pd.show();
+	}
+
+	public void dismissProgressDialog() {
+		if (pd != null && pd.isShowing()) {
+			pd.dismiss();
+			pd = null;
+		}
 	}
 }

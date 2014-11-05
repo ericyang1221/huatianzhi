@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 
 import com.eric.huatianzhi.login.QQLoginUtility;
 import com.eric.huatianzhi.login.SinaWeiboLoginUtility;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class LoginActivity extends BaseActivity {
 	@Override
@@ -32,23 +31,25 @@ public class LoginActivity extends BaseActivity {
 			}
 
 		});
-		
-		findViewById(R.id.look_around).setOnClickListener(new OnClickListener(){
 
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(LoginActivity.this,MainActivity.class);
-				startActivity(i);
-				finish();
-			}
-			
-		});
+		findViewById(R.id.look_around).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(LoginActivity.this,
+								MainActivity.class);
+						startActivity(i);
+						finish();
+					}
+
+				});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.main, menu);
+		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
