@@ -58,6 +58,7 @@ public class SinaWeiboLoginUtility {
 				RequestListener mListener = new RequestListener() {
 					@Override
 					public void onComplete(String response) {
+						MLog.d(TAG, response);
 						if (!TextUtils.isEmpty(response)) {
 							User user = User.parse(response);
 							MLog.d(TAG, user.name);
@@ -65,9 +66,8 @@ public class SinaWeiboLoginUtility {
 					}
 
 					@Override
-					public void onWeiboException(WeiboException arg0) {
-						// TODO Auto-generated method stub
-						
+					public void onWeiboException(WeiboException e) {
+						MLog.e(TAG, e.toString());
 					}
 				};
 				long uid = Long.parseLong(mAccessToken.getUid());

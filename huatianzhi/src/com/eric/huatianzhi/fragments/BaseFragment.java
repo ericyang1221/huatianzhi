@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.eric.huatianzhi.BaseActivity;
+import com.eric.huatianzhi.MainActivity;
 import com.eric.huatianzhi.MyApplication;
 import com.eric.huatianzhi.R;
+import com.eric.huatianzhi.dialogs.ProgressDialogFragment;
 import com.eric.huatianzhi.utils.MLog;
 import com.eric.volley.VolleySingleton;
 
@@ -20,6 +22,8 @@ public class BaseFragment extends Fragment {
 	private final String TAG = "BaseFragment";
 	private MyApplication myApp;
 	protected RequestQueue mRequestQueue;
+	private final String PROGRESS_DIALOG_TAG = "PROGRESS_DIALOG_TAG";
+	private ProgressDialogFragment pd;
 
 	public MyApplication getMyApplication() {
 		if (myApp == null) {
@@ -48,6 +52,10 @@ public class BaseFragment extends Fragment {
 		return (BaseActivity) this.getActivity();
 	}
 
+	public MainActivity getMainActivity() {
+		return (MainActivity) this.getActivity();
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -55,7 +63,8 @@ public class BaseFragment extends Fragment {
 		mRequestQueue = VolleySingleton.getInstance().getRequestQueue();
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	protected void addRequest(@SuppressWarnings("rawtypes") Request request) {
 		if (mRequestQueue != null) {
 			mRequestQueue.add(request);
@@ -69,5 +78,19 @@ public class BaseFragment extends Fragment {
 			mRequestQueue.cancelAll(this);
 		}
 		super.onPause();
+	}
+
+	public void showProgressDialog() {
+		if(pd == null){
+			pd = new ProgressDialogFragment();
+		}
+		pd.show(getTheFragmentManager(), PROGRESS_DIALOG_TAG);
+	}
+
+	public void dismissProgressDialog() {
+		if (pd != null && pd.isVisible()) {
+			pd.dismiss();
+			pd = null;
+		}
 	}
 }

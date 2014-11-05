@@ -7,16 +7,18 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.eric.huatianzhi.R;
 import com.eric.huatianzhi.utils.MLog;
+import com.eric.huatianzhi.view.RoundImageView;
 import com.eric.volley.VolleySingleton;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class PhotoAlbumFragment extends BaseFragment {
 	private final String TAG = "PhotoAlbumFragment";
@@ -29,11 +31,30 @@ public class PhotoAlbumFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+		registerFunc();
 		this.inflater = inflater;
 		View layout = inflater.inflate(R.layout.photo_album, container, false);
 		mAdapterView = (PLA_AdapterView<ListAdapter>) layout
 				.findViewById(R.id.list);
 		return layout;
+	}
+	
+	private void registerFunc(){
+		final SlidingMenu menu = new SlidingMenu(getBaseActivity());
+		menu.setMode(SlidingMenu.LEFT);
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		menu.setShadowWidthRes(R.dimen.shadow_width);
+		menu.setShadowDrawable(R.drawable.shadow);
+		menu.setBehindWidthRes(R.dimen.slidingmenu_offset);
+		menu.setFadeDegree(0.35f);
+		menu.attachToActivity(getBaseActivity(), SlidingMenu.SLIDING_CONTENT);
+		menu.setMenu(R.layout.login_menu);
+		getMainActivity().setTitleLeft(0, new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				menu.showMenu();
+			}
+		});
 	}
 
 	@Override
@@ -81,7 +102,7 @@ public class PhotoAlbumFragment extends BaseFragment {
 			if (convertView == null) {
 				holder = new ViewHolder();
 				convertView = inflater.inflate(R.layout.album_item, null);
-				holder.imageView = (NetworkImageView) convertView
+				holder.imageView = (RoundImageView) convertView
 						.findViewById(R.id.thumbnail);
 				convertView.setTag(holder);
 			} else {
@@ -98,7 +119,7 @@ public class PhotoAlbumFragment extends BaseFragment {
 	}
 
 	class ViewHolder {
-		public NetworkImageView imageView;
+		public RoundImageView imageView;
 	}
 
 	private void initAdapter() {

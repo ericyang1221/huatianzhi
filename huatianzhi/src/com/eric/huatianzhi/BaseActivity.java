@@ -34,7 +34,8 @@ public class BaseActivity extends FragmentActivity {
 		fragmentManager = getTheFragmentManager();
 	}
 
-	protected void addRequest(@SuppressWarnings("rawtypes") Request request) {
+	@SuppressWarnings("unchecked")
+	public void addRequest(@SuppressWarnings("rawtypes") Request request) {
 		if (mRequestQueue != null) {
 			mRequestQueue.add(request);
 		}
@@ -57,5 +58,4 @@ public class BaseActivity extends FragmentActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-
 }
