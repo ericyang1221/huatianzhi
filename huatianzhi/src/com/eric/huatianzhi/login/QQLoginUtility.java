@@ -35,20 +35,20 @@ public class QQLoginUtility extends LoginUtility {
 	}
 
 	@Override
-	public void doLogin() {
+	public void doLogin(final String invitationCode) {
 		if (!mTencent.isSessionValid()) {
 			IUiListener listener = new BaseUiListener() {
 				@Override
 				protected void doComplete(JSONObject values) {
 					super.doComplete(values);
-					updateUserInfo();
+					updateUserInfo(invitationCode);
 					updateLoginButton();
 				}
 			};
 			mTencent.login(activity, "all", listener);
 		} else {
 			mTencent.logout(activity);
-			updateUserInfo();
+			updateUserInfo(invitationCode);
 			updateLoginButton();
 		}
 	}
@@ -78,7 +78,7 @@ public class QQLoginUtility extends LoginUtility {
 		}
 	}
 
-	private void updateUserInfo() {
+	private void updateUserInfo(final String invitationCode) {
 		if (mTencent != null && mTencent.isSessionValid()) {
 			IUiListener listener = new IUiListener() {
 
@@ -94,7 +94,7 @@ public class QQLoginUtility extends LoginUtility {
 							"updateUserInfo onComplete: " + response.toString());
 					String nickName = ((JSONObject) response)
 							.optString("nickname");
-					doJiaqiLogin(nickName);
+					doJiaqiLogin(nickName, invitationCode);
 				}
 
 				@Override
@@ -113,11 +113,7 @@ public class QQLoginUtility extends LoginUtility {
 
 	private void updateLoginButton() {
 		if (mTencent != null && mTencent.isSessionValid()) {
-			// mNewLoginButton.setTextColor(Color.RED);
-			// mNewLoginButton.setText("退出帐号");
 		} else {
-			// mNewLoginButton.setTextColor(Color.BLUE);
-			// mNewLoginButton.setText("登录");
 		}
 	}
 

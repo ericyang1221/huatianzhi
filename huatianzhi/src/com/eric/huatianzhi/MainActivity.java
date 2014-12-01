@@ -1,7 +1,10 @@
 package com.eric.huatianzhi;
 
+import java.util.List;
+
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eric.huatianzhi.beans.JoinedWeddingBean;
 import com.eric.huatianzhi.fragments.CoupleFragment;
 import com.eric.huatianzhi.fragments.PhotoAlbumFragment;
 import com.eric.huatianzhi.fragments.PhotoDetailFragment;
@@ -31,6 +35,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private PhotoAlbumFragment photoAlbumFragment;
 	private PhotoDetailFragment photoDetailFragment;
 	private CoupleFragment coupleFragment;
+	JoinedWeddingBean jwb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,21 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 
 		initViews();
-		setTabSelection(R.id.nav_album);
+
+		@SuppressWarnings("unchecked")
+		List<JoinedWeddingBean> jwbList = (List<JoinedWeddingBean>) this
+				.getIntent().getSerializableExtra("joinedWeddingList");
+		if (jwbList.size() > 1) {
+			coupleFragment = new CoupleFragment(jwbList);
+			FragmentTransaction transaction = fragmentManager
+					.beginTransaction();
+			transaction.replace(R.id.content, coupleFragment);
+			transaction.commit();
+			fragmentManager.executePendingTransactions();
+		} else {
+			jwb = (JoinedWeddingBean) jwbList.get(0);
+			setTabSelection(R.id.nav_album);
+		}
 	}
 
 	private void initViews() {
@@ -97,7 +116,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		case R.id.nav_album:
 			albumImg.setImageResource(R.drawable.album_selected);
 			albumText.setTextColor(pink);
-			photoAlbumFragment = new PhotoAlbumFragment();
+			photoAlbumFragment = new PhotoAlbumFragment(jwb);
 			transaction.replace(R.id.content, photoAlbumFragment);
 			break;
 		case R.id.nav_invitation:
@@ -109,8 +128,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		case R.id.nav_friend:
 			friendImg.setImageResource(R.drawable.friends_selected);
 			friendText.setTextColor(pink);
-			coupleFragment = new CoupleFragment();
-			transaction.replace(R.id.content, coupleFragment);
 			break;
 		case R.id.nav_info:
 			infoImg.setImageResource(R.drawable.info_selected);

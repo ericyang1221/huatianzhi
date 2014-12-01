@@ -2638,7 +2638,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050045;
         public static final int action_menu_presenter=0x7f050046;
         public static final int action_mode_close_button=0x7f050053;
-        public static final int action_settings=0x7f050095;
+        public static final int action_settings=0x7f050096;
         public static final int activity_chooser_view_content=0x7f050054;
         public static final int afterDescendants=0x7f050028;
         public static final int albumImg=0x7f050072;
@@ -2656,7 +2656,7 @@ containing a value of this type.
         public static final int center=0x7f05001f;
         public static final int checkbox=0x7f05005c;
         public static final int collapseActionView=0x7f05003d;
-        public static final int comment_list=0x7f05008c;
+        public static final int comment_list=0x7f05008d;
         public static final int content=0x7f050070;
         public static final int defaultPosition=0x7f050011;
         public static final int default_activity_button=0x7f050057;
@@ -2689,6 +2689,7 @@ containing a value of this type.
         public static final int insideInset=0x7f050008;
         public static final int insideOverlay=0x7f050007;
         public static final int invisible=0x7f050002;
+        public static final int invitationCode=0x7f050082;
         public static final int invitationImg=0x7f050076;
         public static final int invitationText=0x7f050077;
         public static final int left=0x7f050012;
@@ -2696,14 +2697,14 @@ containing a value of this type.
         public static final int listMode=0x7f050033;
         public static final int list_item=0x7f050058;
         public static final int locale=0x7f050019;
-        public static final int login_add=0x7f050086;
-        public static final int login_apply=0x7f050089;
-        public static final int login_exit=0x7f05008b;
-        public static final int login_help=0x7f05008a;
-        public static final int login_home=0x7f050085;
-        public static final int login_list=0x7f050087;
-        public static final int login_recommend=0x7f050088;
-        public static final int look_around=0x7f050084;
+        public static final int login_add=0x7f050087;
+        public static final int login_apply=0x7f05008a;
+        public static final int login_exit=0x7f05008c;
+        public static final int login_help=0x7f05008b;
+        public static final int login_home=0x7f050086;
+        public static final int login_list=0x7f050088;
+        public static final int login_recommend=0x7f050089;
+        public static final int look_around=0x7f050085;
         public static final int low=0x7f05000c;
         public static final int ltr=0x7f050016;
         public static final int margin=0x7f050030;
@@ -2724,13 +2725,13 @@ containing a value of this type.
         public static final int outsideOverlay=0x7f050009;
         public static final int progress_circular=0x7f050047;
         public static final int progress_horizontal=0x7f050048;
-        public static final int ptr_id_header=0x7f05008e;
-        public static final int ptr_id_image=0x7f05008f;
-        public static final int ptr_id_last_updated=0x7f050093;
-        public static final int ptr_id_spinner=0x7f050090;
-        public static final int ptr_id_text=0x7f050092;
-        public static final int ptr_id_textwrapper=0x7f050091;
-        public static final int qqlogin=0x7f050083;
+        public static final int ptr_id_header=0x7f05008f;
+        public static final int ptr_id_image=0x7f050090;
+        public static final int ptr_id_last_updated=0x7f050094;
+        public static final int ptr_id_spinner=0x7f050091;
+        public static final int ptr_id_text=0x7f050093;
+        public static final int ptr_id_textwrapper=0x7f050092;
+        public static final int qqlogin=0x7f050084;
         public static final int radio=0x7f05005e;
         public static final int right=0x7f050013;
         public static final int rtl=0x7f050017;
@@ -2752,7 +2753,7 @@ containing a value of this type.
         public static final int showHome=0x7f050036;
         public static final int showTitle=0x7f050038;
         public static final int singleChoice=0x7f05002d;
-        public static final int slidingmenumain=0x7f050094;
+        public static final int slidingmenumain=0x7f050095;
         public static final int software=0x7f050014;
         public static final int split_action_bar=0x7f05004d;
         public static final int submit_area=0x7f050068;
@@ -2766,7 +2767,7 @@ containing a value of this type.
         public static final int title_bar_left_btn=0x7f05006d;
         public static final int title_bar_right_btn=0x7f05006f;
         public static final int title_bar_text=0x7f05006e;
-        public static final int topViewPager=0x7f05008d;
+        public static final int topViewPager=0x7f05008e;
         public static final int top_action_bar=0x7f05004f;
         public static final int up=0x7f050050;
         public static final int useLogo=0x7f050035;
@@ -2774,7 +2775,7 @@ containing a value of this type.
         public static final int viewEnd=0x7f050021;
         public static final int viewStart=0x7f050020;
         public static final int visible=0x7f050001;
-        public static final int weibologin=0x7f050082;
+        public static final int weibologin=0x7f050083;
         public static final int withText=0x7f05003c;
         public static final int yes=0x7f050022;
     }
@@ -2902,6 +2903,7 @@ containing a value of this type.
         public static final int loading=0x7f07001e;
         public static final int login_error_pls_try_later=0x7f07001d;
         public static final int look_around=0x7f070018;
+        public static final int no_joined_wedding=0x7f07001f;
         public static final int ptr_last_updated=0x7f070004;
         public static final int ptr_pull_to_refresh=0x7f070001;
         public static final int ptr_refreshing=0x7f070003;

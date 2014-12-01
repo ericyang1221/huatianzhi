@@ -18,6 +18,7 @@ import com.sina.weibo.sdk.openapi.models.User;
 
 public class SinaWeiboLoginUtility extends LoginUtility {
 	private final String TAG = "SinaWeiboLoginUtility";
+	private final Integer SINA_LOGIN_TYPE = 1;
 	private static SinaWeiboLoginUtility sinaWeiboLoginUtility;
 	private SsoHandler mSsoHandler;
 	private WeiboAuth mWeiboAuth;
@@ -31,6 +32,7 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 	protected SinaWeiboLoginUtility(BaseActivity activity) {
 		super(activity);
 		mWeiboAuth = new WeiboAuth(activity, APP_KEY, REDIRECT_URL, SCOPE);
+		loginType = SINA_LOGIN_TYPE;
 	}
 
 	public static SinaWeiboLoginUtility getInstance(BaseActivity activity) {
@@ -41,12 +43,17 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 	}
 
 	@Override
-	public void doLogin() {
+	public void doLogin(String invitationCode) {
 		mSsoHandler = new SsoHandler(activity, mWeiboAuth);
-		mSsoHandler.authorize(new AuthListener());
+		mSsoHandler.authorize(new AuthListener(invitationCode));
 	}
 
 	class AuthListener implements WeiboAuthListener {
+		String invitationCode;
+
+		public AuthListener(String invitationCode) {
+			this.invitationCode = invitationCode;
+		}
 
 		@Override
 		public void onComplete(Bundle values) {
@@ -61,7 +68,11 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 						MLog.d(TAG, response);
 						if (!TextUtils.isEmpty(response)) {
 							User user = User.parse(response);
-							MLog.d(TAG, user.name);
+							String nickName = user.name;
+							loginId = user.idstr;
+							MLog.d(TAG, "userName:" + nickName + "  userId:"
+									+ loginId);
+							doJiaqiLogin(nickName, invitationCode);
 						}
 					}
 
@@ -73,10 +84,6 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 				long uid = Long.parseLong(mAccessToken.getUid());
 				mUsersAPI.show(uid, mListener);
 			} else {
-				// 以下几种情况，您会收到 Code：
-				// 1. 当您未在平台上注册的应用程序的包名与签名时；
-				// 2. 当您注册的应用程序包名与签名不正确时；
-				// 3. 当您在平台上注册的包名和签名与您当前测试的应用的包名和签名不匹配时。
 				String code = values.getString("code");
 				String message = "auth failed.";
 				if (!TextUtils.isEmpty(code)) {
@@ -98,8 +105,6 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// SSO 授权回调
-		// 重要：发起 SSO 登陆的 Activity 必须重写 onActivityResult
 		if (mSsoHandler != null) {
 			mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
 		}

@@ -63,10 +63,10 @@ public class BaseActivity extends FragmentActivity {
 
 	public void showProgressDialog() {
 		if (pd == null) {
-			ProgressDialog dialog = new ProgressDialog(this);
-			dialog.setTitle(getString(R.string.loading));
-			dialog.setIndeterminate(true);
-			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pd = new ProgressDialog(this);
+			pd.setTitle(getString(R.string.loading));
+			pd.setIndeterminate(true);
+			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		}
 		pd.show();
 	}

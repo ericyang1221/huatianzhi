@@ -1,7 +1,11 @@
 package com.eric.huatianzhi.fragments;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -12,9 +16,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.eric.huatianzhi.R;
+import com.eric.huatianzhi.beans.AlbumBean;
+import com.eric.huatianzhi.beans.JoinedWeddingBean;
 import com.eric.huatianzhi.utils.MLog;
+import com.eric.huatianzhi.utils.URLConstants;
 import com.eric.huatianzhi.view.RoundImageView;
 import com.eric.volley.VolleySingleton;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
@@ -25,6 +35,11 @@ public class PhotoAlbumFragment extends BaseFragment {
 	private PLA_AdapterView<ListAdapter> mAdapterView = null;
 	private WaterFallAdapter mAdapter = null;
 	private LayoutInflater inflater;
+	private JoinedWeddingBean jwb;
+
+	public PhotoAlbumFragment(JoinedWeddingBean jwb) {
+		this.jwb = jwb;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -36,10 +51,12 @@ public class PhotoAlbumFragment extends BaseFragment {
 		View layout = inflater.inflate(R.layout.photo_album, container, false);
 		mAdapterView = (PLA_AdapterView<ListAdapter>) layout
 				.findViewById(R.id.list);
+		mAdapter = new WaterFallAdapter();
+		mAdapterView.setAdapter(mAdapter);
 		return layout;
 	}
-	
-	private void registerFunc(){
+
+	private void registerFunc() {
 		final SlidingMenu menu = new SlidingMenu(getBaseActivity());
 		menu.setMode(SlidingMenu.LEFT);
 		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -49,7 +66,7 @@ public class PhotoAlbumFragment extends BaseFragment {
 		menu.setFadeDegree(0.35f);
 		menu.attachToActivity(getBaseActivity(), SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(R.layout.login_menu);
-		getMainActivity().setTitleLeft(0, new OnClickListener(){
+		getMainActivity().setTitleLeft(0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				menu.showMenu();
@@ -62,7 +79,6 @@ public class PhotoAlbumFragment extends BaseFragment {
 		super.onResume();
 		MLog.d(TAG, "onResume");
 		initAdapter();
-		mAdapterView.setAdapter(mAdapter);
 	}
 
 	@Override
@@ -73,11 +89,15 @@ public class PhotoAlbumFragment extends BaseFragment {
 	private class WaterFallAdapter extends BaseAdapter {
 		private ImageLoader imageLoader = VolleySingleton.getInstance()
 				.getImageLoader();
-		private List<String> dataList;
+		private List<String> dataList = new ArrayList<String>();
 
-		public WaterFallAdapter(List<String> dataList) {
+		public WaterFallAdapter() {
 			super();
+		}
+
+		public void updateData(List<String> dataList) {
 			this.dataList = dataList;
+			this.notifyDataSetChanged();
 		}
 
 		@Override
@@ -123,15 +143,39 @@ public class PhotoAlbumFragment extends BaseFragment {
 	}
 
 	private void initAdapter() {
-		List<String> l = new ArrayList<String>();
-		l.add("http://pic12.nipic.com/20110108/1592733_103230329000_2.jpg");
-		l.add("http://bbs.szonline.net/UploadFile/album/2012/1/508245/10/20120110093131_13505.jpg");
-		l.add("http://photocdn.sohu.com/20090331/Img263119749.jpg");
-		l.add("http://photo.dizo.com.cn/article/2011/4/23/2e18546f-f64c-4d92-83b2-90a8fb7000b1.jpg");
-		l.add("http://pic-shopping.bcia.com.cn/s/thump/110223/dc90cb1d8aba4f45774c8d6fdba94fdc_2_322_243.jpg");
-		l.add("http://imgt1.bdstatic.com/it/u=4081395060,2324339507&fm=90&gp=0.jpg");
-		l.add("http://imgt4.bdstatic.com/it/u=2961223305,208614355&fm=21&gp=0.jpg");
-		l.add("http://www.meihua.info/today/post/image.axd?picture=kuxia3.jpg");
-		mAdapter = new WaterFallAdapter(l);
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("LoginID", getMyApplication().getLoginId());
+		params.put("AlbumID", jwb.getPreWeddingPhotoAlbumID());
+		JSONObject paramsJson = new JSONObject(params);
+		MLog.d(TAG, "viewAlbum params:" + paramsJson.toString());
+		getBaseActivity().addRequest(
+				new JsonObjectRequest(URLConstants.VIEW_ALBUM_URL, paramsJson,
+						new Response.Listener<JSONObject>() {
+
+							@Override
+							public void onResponse(JSONObject response) {
+								MLog.d(TAG, response.toString());
+								String albumName = response
+										.optString("AlbumName");
+								JSONArray ja = response
+										.optJSONArray("PhotoInfos");
+								List<AlbumBean> abList = new ArrayList<AlbumBean>();
+								List<String> l = new ArrayList<String>();
+								for (int i = 0; i < ja.length(); i++) {
+									JSONObject j = ja.optJSONObject(i);
+									AlbumBean ab = AlbumBean.fromJson(j);
+									abList.add(ab);
+									l.add(ab.getThumbURL());
+								}
+								mAdapter.updateData(l);
+							}
+						}, new Response.ErrorListener() {
+
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								MLog.e(TAG, error.toString());
+
+							}
+						}));
 	}
 }

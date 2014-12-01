@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 
 import com.eric.huatianzhi.login.QQLoginUtility;
 import com.eric.huatianzhi.login.SinaWeiboLoginUtility;
@@ -15,11 +16,13 @@ public class LoginActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
+		final EditText iet = (EditText) findViewById(R.id.invitationCode);
 		findViewById(R.id.qqlogin).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				QQLoginUtility.getInstance(LoginActivity.this).doLogin();
+				QQLoginUtility.getInstance(LoginActivity.this).doLogin(
+						iet.getText().toString());
 			}
 
 		});
@@ -27,7 +30,8 @@ public class LoginActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-				SinaWeiboLoginUtility.getInstance(LoginActivity.this).doLogin();
+				SinaWeiboLoginUtility.getInstance(LoginActivity.this).doLogin(
+						iet.getText().toString());
 			}
 
 		});

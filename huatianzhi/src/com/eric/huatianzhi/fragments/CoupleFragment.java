@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +16,7 @@ import android.widget.ListAdapter;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.eric.huatianzhi.R;
+import com.eric.huatianzhi.beans.JoinedWeddingBean;
 import com.eric.huatianzhi.utils.MLog;
 import com.eric.volley.VolleySingleton;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
@@ -25,6 +27,11 @@ public class CoupleFragment extends BaseFragment {
 	private PLA_AdapterView<ListAdapter> mAdapterView = null;
 	private WaterFallAdapter mAdapter = null;
 	private LayoutInflater inflater;
+	private List<JoinedWeddingBean> jwbList;
+
+	public CoupleFragment(List<JoinedWeddingBean> jwbList) {
+		this.jwbList = jwbList;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -124,6 +131,12 @@ public class CoupleFragment extends BaseFragment {
 
 	private void initAdapter() {
 		List<String> l = new ArrayList<String>();
+		if (jwbList != null && jwbList.size() > 0) {
+			for (int i = 0; i < jwbList.size(); i++) {
+				JoinedWeddingBean jwb = jwbList.get(i);
+				
+			}
+		}
 		l.add("http://pic12.nipic.com/20110108/1592733_103230329000_2.jpg");
 		l.add("http://pic12.nipic.com/20110108/1592733_103230329000_2.jpg");
 		l.add("http://pic12.nipic.com/20110108/1592733_103230329000_2.jpg");
