@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -53,6 +54,7 @@ public class PhotoAlbumFragment extends BaseFragment {
 				.findViewById(R.id.list);
 		mAdapter = new WaterFallAdapter();
 		mAdapterView.setAdapter(mAdapter);
+		getMainActivity().setTabIcon(R.id.nav_album);
 		return layout;
 	}
 
@@ -89,15 +91,20 @@ public class PhotoAlbumFragment extends BaseFragment {
 	private class WaterFallAdapter extends BaseAdapter {
 		private ImageLoader imageLoader = VolleySingleton.getInstance()
 				.getImageLoader();
-		private List<String> dataList = new ArrayList<String>();
+		private List<AlbumBean> dataList = new ArrayList<AlbumBean>();
 
 		public WaterFallAdapter() {
 			super();
 		}
 
-		public void updateData(List<String> dataList) {
-			this.dataList = dataList;
-			this.notifyDataSetChanged();
+		public void updateData(List<AlbumBean> dataList) {
+			if (dataList != null) {
+				this.dataList = dataList;
+				this.notifyDataSetChanged();
+				MLog.d(TAG, "update data");
+			} else {
+				MLog.d(TAG, "dataList is null");
+			}
 		}
 
 		@Override
@@ -117,29 +124,66 @@ public class PhotoAlbumFragment extends BaseFragment {
 
 		@SuppressLint("InflateParams")
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
 			ViewHolder holder = null;
 			if (convertView == null) {
 				holder = new ViewHolder();
 				convertView = inflater.inflate(R.layout.album_item, null);
 				holder.imageView = (RoundImageView) convertView
 						.findViewById(R.id.thumbnail);
+				holder.nLike = (TextView) convertView.findViewById(R.id.nlike);
+				holder.nLike.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(final View v) {
+						HashMap<String, Object> params = new HashMap<String, Object>();
+						params.put("LoginID", getMyApplication().getLoginId());
+						params.put("ItemID", dataList.get(position).getItemId());
+						JSONObject paramsJson = new JSONObject(params);
+						MLog.d(TAG, "nlike params:" + paramsJson.toString());
+						getBaseActivity().addRequest(
+								new JsonObjectRequest(URLConstants.NLIKE_URL,
+										paramsJson,
+										new Response.Listener<JSONObject>() {
+											@Override
+											public void onResponse(
+													JSONObject response) {
+												MLog.d(TAG, response.toString());
+												JSONObject jo = response
+														.optJSONObject("ItemInfo");
+												String nLike = jo
+														.optString("NLike");
+												((TextView) v).setText(nLike);
+											}
+										}, new Response.ErrorListener() {
+											@Override
+											public void onErrorResponse(
+													VolleyError error) {
+												MLog.e(TAG, error.toString());
+											}
+										}));
+					}
+				});
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			holder.imageView.setDefaultImageResId(R.drawable.ic_launcher);
-			holder.imageView.setErrorImageResId(R.drawable.ic_launcher);
+			// holder.imageView.setDefaultImageResId(R.drawable.ic_launcher);
+			// holder.imageView.setErrorImageResId(R.drawable.ic_launcher);
 			MLog.d(TAG,
 					"position: " + position + "    url: "
 							+ dataList.get(position));
-			holder.imageView.setImageUrl(dataList.get(position), imageLoader);
+			holder.imageView.setImageUrl(dataList.get(position).getThumbURL(),
+					imageLoader);
+			holder.nLike.setText(String.valueOf(dataList.get(position)
+					.getnLike()));
 			return convertView;
 		}
 	}
 
 	class ViewHolder {
 		public RoundImageView imageView;
+		public TextView nLike;
 	}
 
 	private void initAdapter() {
@@ -155,19 +199,15 @@ public class PhotoAlbumFragment extends BaseFragment {
 							@Override
 							public void onResponse(JSONObject response) {
 								MLog.d(TAG, response.toString());
-								String albumName = response
-										.optString("AlbumName");
 								JSONArray ja = response
 										.optJSONArray("PhotoInfos");
 								List<AlbumBean> abList = new ArrayList<AlbumBean>();
-								List<String> l = new ArrayList<String>();
 								for (int i = 0; i < ja.length(); i++) {
 									JSONObject j = ja.optJSONObject(i);
 									AlbumBean ab = AlbumBean.fromJson(j);
 									abList.add(ab);
-									l.add(ab.getThumbURL());
 								}
-								mAdapter.updateData(l);
+								mAdapter.updateData(abList);
 							}
 						}, new Response.ErrorListener() {
 

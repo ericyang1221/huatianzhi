@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -16,8 +15,10 @@ import com.eric.huatianzhi.beans.JoinedWeddingBean;
 import com.eric.huatianzhi.fragments.CoupleFragment;
 import com.eric.huatianzhi.fragments.PhotoAlbumFragment;
 import com.eric.huatianzhi.fragments.PhotoDetailFragment;
+import com.eric.huatianzhi.utils.MLog;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
+	private final String TAG = "MainActivity";
 	private View navAlbum;
 	private View navInvitation;
 	private View navFriend;
@@ -32,32 +33,19 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private TextView infoText;
 	private ImageView titleLeft;
 	private ImageView titleRight;
-	private PhotoAlbumFragment photoAlbumFragment;
 	private PhotoDetailFragment photoDetailFragment;
 	private CoupleFragment coupleFragment;
-	JoinedWeddingBean jwb;
+	private List<JoinedWeddingBean> jwbList;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		initViews();
-
-		@SuppressWarnings("unchecked")
-		List<JoinedWeddingBean> jwbList = (List<JoinedWeddingBean>) this
-				.getIntent().getSerializableExtra("joinedWeddingList");
-		if (jwbList.size() > 1) {
-			coupleFragment = new CoupleFragment(jwbList);
-			FragmentTransaction transaction = fragmentManager
-					.beginTransaction();
-			transaction.replace(R.id.content, coupleFragment);
-			transaction.commit();
-			fragmentManager.executePendingTransactions();
-		} else {
-			jwb = (JoinedWeddingBean) jwbList.get(0);
-			setTabSelection(R.id.nav_album);
-		}
+		jwbList = (List<JoinedWeddingBean>) this.getIntent()
+				.getSerializableExtra("joinedWeddingList");
+		setTabSelection(R.id.nav_album);
 	}
 
 	private void initViews() {
@@ -108,22 +96,38 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void setTabSelection(int index) {
-		clearSelection();
 		clearStack();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		switch (index) {
+		case R.id.nav_album:
+			coupleFragment = new CoupleFragment(jwbList);
+			transaction.replace(R.id.content, coupleFragment);
+			break;
+		case R.id.nav_invitation:
+			photoDetailFragment = new PhotoDetailFragment();
+			transaction.replace(R.id.content, photoDetailFragment);
+			break;
+		case R.id.nav_friend:
+			break;
+		case R.id.nav_info:
+		default:
+			break;
+		}
+		transaction.commit();
+		fragmentManager.executePendingTransactions();
+	}
+
+	public void setTabIcon(int index) {
+		clearSelection();
 		int pink = Color.parseColor("#df4f74");
 		switch (index) {
 		case R.id.nav_album:
 			albumImg.setImageResource(R.drawable.album_selected);
 			albumText.setTextColor(pink);
-			photoAlbumFragment = new PhotoAlbumFragment(jwb);
-			transaction.replace(R.id.content, photoAlbumFragment);
 			break;
 		case R.id.nav_invitation:
 			invitationImg.setImageResource(R.drawable.invitation_selected);
 			invitationText.setTextColor(pink);
-			photoDetailFragment = new PhotoDetailFragment();
-			transaction.replace(R.id.content, photoDetailFragment);
 			break;
 		case R.id.nav_friend:
 			friendImg.setImageResource(R.drawable.friends_selected);
@@ -135,8 +139,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		default:
 			break;
 		}
-		transaction.commit();
-		fragmentManager.executePendingTransactions();
 	}
 
 	private void clearSelection() {

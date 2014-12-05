@@ -6,12 +6,30 @@
     android:orientation="vertical"
     android:padding="3dp" >
 
-    <com.eric.huatianzhi.view.RoundImageView
-        android:id="@+id/thumbnail"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:layout_height="wrap_content" >
+
+        <com.eric.huatianzhi.view.RoundImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/nlike"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/heart"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="10dp" />
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="match_parent"
