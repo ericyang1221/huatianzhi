@@ -41,6 +41,7 @@ public class CoupleFragment extends BaseFragment {
 		this.inflater = inflater;
 		View layout = inflater.inflate(R.layout.couple, container, false);
 		lv = (ListView) layout.findViewById(R.id.list);
+		initAdapter();
 		getMainActivity().setTabIcon(R.id.nav_album);
 		return layout;
 	}
@@ -67,7 +68,6 @@ public class CoupleFragment extends BaseFragment {
 	public void onResume() {
 		super.onResume();
 		MLog.d(TAG, "onResume");
-		initAdapter();
 		lv.setAdapter(mAdapter);
 	}
 
@@ -211,7 +211,7 @@ public class CoupleFragment extends BaseFragment {
 								});
 					}
 				} else {
-					holder.rightView.setVisibility(View.GONE);
+					holder.rightView.setVisibility(View.INVISIBLE);
 				}
 			}
 			return convertView;
@@ -227,6 +227,7 @@ public class CoupleFragment extends BaseFragment {
 
 	private void initAdapter() {
 		List<UrlBean> ubList = new ArrayList<UrlBean>();
+		jwbList.addAll(jwbList);
 		if (jwbList != null && jwbList.size() > 0) {
 			int len = jwbList.size();
 			boolean hasNull = false;
