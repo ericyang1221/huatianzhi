@@ -17,7 +17,7 @@ import com.sina.weibo.sdk.openapi.UsersAPI;
 import com.sina.weibo.sdk.openapi.models.User;
 
 public class SinaWeiboLoginUtility extends LoginUtility {
-	private final String TAG = "SinaWeiboLoginUtility";
+	private static final String TAG = "SinaWeiboLoginUtility";
 	private final Integer SINA_LOGIN_TYPE = 1;
 	private static SinaWeiboLoginUtility sinaWeiboLoginUtility;
 	private SsoHandler mSsoHandler;
@@ -36,6 +36,7 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 	}
 
 	public static SinaWeiboLoginUtility getInstance(BaseActivity activity) {
+		MLog.d(TAG, "getInstance: " + sinaWeiboLoginUtility);
 		if (sinaWeiboLoginUtility == null) {
 			sinaWeiboLoginUtility = new SinaWeiboLoginUtility(activity);
 		}
@@ -44,7 +45,10 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 
 	@Override
 	public void doLogin(String invitationCode) {
-		mSsoHandler = new SsoHandler(activity, mWeiboAuth);
+		MLog.d(TAG, "doLogin");
+		if (mSsoHandler == null) {
+			mSsoHandler = new SsoHandler(activity, mWeiboAuth);
+		}
 		mSsoHandler.authorize(new AuthListener(invitationCode));
 	}
 
@@ -57,6 +61,7 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 
 		@Override
 		public void onComplete(Bundle values) {
+			MLog.d(TAG, "AuthListener onComplete: " + values);
 			mAccessToken = Oauth2AccessToken.parseAccessToken(values);
 			if (mAccessToken.isSessionValid()) {
 				AccessTokenKeeper.writeAccessToken(activity, mAccessToken);
@@ -108,5 +113,10 @@ public class SinaWeiboLoginUtility extends LoginUtility {
 		if (mSsoHandler != null) {
 			mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
 		}
+	}
+
+	@Override
+	public void onDestory() {
+		sinaWeiboLoginUtility = null;
 	}
 }

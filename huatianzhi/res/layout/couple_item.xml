@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="2dp" >
 
     <LinearLayout
         android:id="@+id/couple_item_left"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
         android:padding="2dp" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="140dp"
+            android:background="@drawable/couple_item_bg"
             android:orientation="vertical" >
 
             <com.android.volley.toolbox.NetworkImageView
@@ -38,15 +38,15 @@
     <LinearLayout
         android:id="@+id/couple_item_right"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
         android:padding="2dp" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="140dp"
+            android:background="@drawable/couple_item_bg"
             android:orientation="vertical" >
 
             <com.android.volley.toolbox.NetworkImageView

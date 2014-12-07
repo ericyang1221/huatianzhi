@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -151,8 +152,10 @@ public class CoupleFragment extends BaseFragment {
 				String right = ub.getUrlRight();
 				if (left != null) {
 					if ("add_new".equals(left)) {
+						Options opts = new BitmapFactory.Options();
+						opts.inSampleSize = 2;
 						Bitmap bitmap = BitmapFactory.decodeResource(
-								getResources(), R.drawable.add_new);
+								getResources(), R.drawable.add_new,opts);
 						holder.imageViewLeft.setLocalImageBitmap(bitmap);
 						holder.leftView
 								.setOnClickListener(new OnClickListener() {
@@ -227,7 +230,6 @@ public class CoupleFragment extends BaseFragment {
 
 	private void initAdapter() {
 		List<UrlBean> ubList = new ArrayList<UrlBean>();
-		jwbList.addAll(jwbList);
 		if (jwbList != null && jwbList.size() > 0) {
 			int len = jwbList.size();
 			boolean hasNull = false;

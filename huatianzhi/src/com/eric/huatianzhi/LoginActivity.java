@@ -10,8 +10,11 @@ import android.widget.EditText;
 
 import com.eric.huatianzhi.login.QQLoginUtility;
 import com.eric.huatianzhi.login.SinaWeiboLoginUtility;
+import com.eric.huatianzhi.utils.MLog;
 
 public class LoginActivity extends BaseActivity {
+	private final String TAG = "LoginActivity";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,10 +75,17 @@ public class LoginActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
+		MLog.d(TAG, "onActivityResult data: " + data);
 		SinaWeiboLoginUtility.getInstance(LoginActivity.this).onActivityResult(
 				requestCode, resultCode, data);
 		QQLoginUtility.getInstance(LoginActivity.this).onActivityResult(
 				requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		QQLoginUtility.getInstance(this).onDestory();
+		SinaWeiboLoginUtility.getInstance(this).onDestory();
 	}
 }

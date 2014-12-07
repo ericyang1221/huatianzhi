@@ -13,7 +13,7 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 public class QQLoginUtility extends LoginUtility {
-	private final String TAG = "QQLoginUtility";
+	private static final String TAG = "QQLoginUtility";
 	private final Integer QQLOGIN_TYPE = 2;
 	private static Tencent mTencent;
 	private static String mAppid = "1102297284";
@@ -28,6 +28,7 @@ public class QQLoginUtility extends LoginUtility {
 	}
 
 	public static QQLoginUtility getInstance(BaseActivity activity) {
+		MLog.d(TAG, "getInstance: " + qqLoginUtility);
 		if (qqLoginUtility == null) {
 			qqLoginUtility = new QQLoginUtility(activity);
 		}
@@ -121,5 +122,10 @@ public class QQLoginUtility extends LoginUtility {
 		if (mTencent != null) {
 			mTencent.onActivityResult(requestCode, resultCode, data);
 		}
+	}
+
+	@Override
+	public void onDestory() {
+		qqLoginUtility = null;
 	}
 }

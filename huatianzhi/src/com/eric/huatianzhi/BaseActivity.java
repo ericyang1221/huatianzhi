@@ -7,9 +7,11 @@ import android.support.v4.app.FragmentManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.eric.huatianzhi.utils.MLog;
 import com.eric.volley.VolleySingleton;
 
 public class BaseActivity extends FragmentActivity {
+	private final String TAG = "BaseActivity";
 	protected RequestQueue mRequestQueue;
 	private MyApplication myApp;
 	protected FragmentManager fragmentManager;
@@ -31,6 +33,7 @@ public class BaseActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		MLog.d(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
 		mRequestQueue = VolleySingleton.getInstance().getRequestQueue();
 		fragmentManager = getTheFragmentManager();
@@ -45,6 +48,7 @@ public class BaseActivity extends FragmentActivity {
 
 	@Override
 	protected void onStop() {
+		MLog.d(TAG, "onStop");
 		super.onStop();
 		if (mRequestQueue != null) {
 			mRequestQueue.cancelAll(this);
@@ -53,11 +57,13 @@ public class BaseActivity extends FragmentActivity {
 
 	@Override
 	protected void onResume() {
+		MLog.d(TAG, "onResume");
 		super.onResume();
 	}
 
 	@Override
 	protected void onDestroy() {
+		MLog.d(TAG, "onDestroy");
 		super.onDestroy();
 	}
 

@@ -97,4 +97,6 @@ public abstract class LoginUtility {
 	protected void showLoginErrorToast(String msg) {
 		Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
 	}
+
+	public abstract void onDestory();
 }
